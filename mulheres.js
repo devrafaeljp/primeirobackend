@@ -80,6 +80,19 @@ function corrigeMulher(request, response) {
 }
 
 
+// DELETE
+function deletaMulher(request, response) {
+    function todasMenosEla(mulher) {
+        if(mulher.id !== request.params.id) {
+            return mulher;
+        }
+    }
+
+    const mulheresQueFicam = mulheres.filter(todasMenosEla);
+
+    response.json(mulheresQueFicam);
+}
+
 
 
 // PORTA
@@ -91,4 +104,5 @@ function mostraPorta() {
 app.use(router.get('/mulheres', mostraMulheres)); // rota para mostrar as mulheres
 app.use(router.post('/mulheres', criaMulher)); // rota para criar uma nova mulher
 app.use(router.patch('/mulheres/:id', corrigeMulher)); // rota para corrigir uma mulher
+app.use(router.delete('/mulheres/:id', deletaMulher)); // rota para deletar uma mulher
 app.listen(porta, mostraPorta); // servidor ouvindo a porta
