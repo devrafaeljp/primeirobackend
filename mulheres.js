@@ -1,6 +1,6 @@
 const express = require('express'); // iniciando o express
 const router = express.Router(); // configurando a primeira parte da rota
-const { v4: uuidv4 } = require('uuid'); // importando o uuid
+const { v4: uuidv4 } = require('uuid'); // importando o uuid - biblioteca para criar id únicos
 
 const app = express(); // iniciando o app
 app.use(express.json()); // usando o json para fazer as requisições
@@ -29,11 +29,16 @@ const mulheres = [
     {
         id: '4',
         nome: 'Paula',
-        idade: '37',
+        idade: 37,
         naturalidade: 'Bahia',
     }
 ]
 
+
+// GET
+function mostraMulheres(request, response) {
+    response.json(mulheres);
+}
 
 // POST
 function criaMulher(request, response) {
@@ -49,12 +54,33 @@ function criaMulher(request, response) {
     response.json(mulheres);
 }
 
+// PATCH
+function corrigeMulher(request, response) {
+    function encontraMulher(mulher) {
+        if(mulher.id === request.params.id) {
+            return mulher;
+        }
+    }
 
+    const mulherEncontrada = mulheres.find(encontraMulher);
 
-// GET
-function mostraMulheres(request, response) {
+    if (request.body.nome) {
+        mulherEncontrada.nome = request.body.nome;
+    }
+
+    if (request.body.idade) {
+        mulherEncontrada.idade = request.body.idade
+    }
+
+    if (request.body.naturalidade) {
+        mulherEncontrada.naturalidade = request.body.naturalidade
+    }
+
     response.json(mulheres);
 }
+
+
+
 
 // PORTA
 function mostraPorta() {
@@ -64,4 +90,5 @@ function mostraPorta() {
 
 app.use(router.get('/mulheres', mostraMulheres)); // rota para mostrar as mulheres
 app.use(router.post('/mulheres', criaMulher)); // rota para criar uma nova mulher
+app.use(router.patch('/mulheres/:id', corrigeMulher)); // rota para corrigir uma mulher
 app.listen(porta, mostraPorta); // servidor ouvindo a porta
